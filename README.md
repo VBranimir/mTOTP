@@ -1,7 +1,34 @@
-# mTOTP – Manual‑Executable One‑Time Password
+# mTOTP
+It takes a special kind of geek to not carry a 2FA device.
+One who becomes the 2FA.
 
 mTOTP is an experimental, manual variant of TOTP designed to be computed by a human without electronic devices. It explores the limits of time-based authentication under strict human constraints and makes no claims of cryptographic equivalence to standard TOTP.
 
+
+
+---
+
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Demo](#demo)
+  - [PAM demo](#pam-demo)
+- [Overview](#overview)
+- [Example Inputs](#example-inputs)
+- [Step 1 - Build Time Vector](#step-1---build-time-vector)
+- [Step 2 - Build Sbox from the Secret Key](#step-2---build-sbox-from-the-secret-key)
+- [Step 3 - Combine Time and Key (mod 10)](#step-3---combine-time-and-key-mod-10)
+- [Step 4 - Apply Sbox Substitution](#step-4---apply-sbox-substitution)
+- [Step 5 - Diffusion (Digit Mixing)](#step-5---diffusion-digit-mixing)
+- [Step 6 - Fold to 5 Digits](#step-6---fold-to-5-digits)
+- [Step 7 - Calculate Final Digit (o6)](#step-7---calculate-final-digit-o6)
+- [Final mTOTP](#final-mtotp)
+- [Invariants & Sanity Checks](#invariants--sanity-checks)
+- [Testing tool usage](#testing-tool-usage)
+- [PAM plugin](#pam-plugin)
+- [Keycloak plugin - TBD](#keycloak-plugin---tbd)
+
+## Introduction
 mTOTP is a **human‑executable OTP scheme** designed to be:
 - deterministic
 - mentally doable (with practice)
@@ -12,8 +39,10 @@ This protocol intentionally allows OTPs to be calculated for future times.
 Rather than treating this as a limitation, it makes it a requirement: the user must know when they intend to authenticate, and the verifier checks against that agreed moment. Time is therefore not an approximation, but an explicit part of the protocol - Turning authentication time from reactive to intentional.
 This document describes the **exact algorithm used by the tool**, written for humans first.
 
----
-## Demos
+This protocol is designed for **human execution first**, with software acting as a helper and verifier.  
+Clarity, determinism, and mental tractability are intentional design goals.
+
+## Demo
 
 ### PAM demo
 
@@ -65,7 +94,7 @@ T = 2601171700
 
 ---
 
-## Step 2 - Build S‑box from the Secret Key
+## Step 2 - Build Sbox from the Secret Key
 
 The S‑box is a **digit substitution table (0–9 → 0–9)** derived **only from the secret key**.
 S-box (Substitution Box) is a digit-remapping table that replaces each digit (0–9) with another digit to introduce non-linearity.
@@ -122,7 +151,7 @@ C = 3835669460
 
 ---
 
-## Step 4 - Apply S‑box Substitution
+## Step 4 - Apply Sbox Substitution
 
 Replace **each digit** of `C` using the S‑box table.
 
@@ -240,17 +269,12 @@ Add the **five OTP digits** and take mod 10:
 
 ---
 
-## Notes
-
-This algorithm is designed for **human execution first**, with software acting as a helper and verifier.  
-Clarity, determinism, and mental tractability are intentional design goals.
-
-
-
 ## Testing tool usage
 
-Read `tools/README.md`
+[Tool README](tools/README.md)
 
-## PAM plugin - TBD
+## PAM plugin
+[PAM module](plugins/pam/README.md)
 
 ## Keycloak plugin - TBD
+[Keycloak module](plugins/keycloak/README.md)
