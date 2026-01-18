@@ -13,6 +13,11 @@ Rather than treating this as a limitation, it makes it a requirement: the user m
 This document describes the **exact algorithm used by the tool**, written for humans first.
 
 ---
+## Demos
+
+### PAM demo
+
+![pam_mtotp SSH demo](docs/pam_demo.gif)
 
 ## Overview
 
@@ -40,7 +45,7 @@ No randomness is involved during generation.
 
 ---
 
-## Step 1 — Build Time Vector
+## Step 1 - Build Time Vector
 
 Convert the planned login time into the format, take into account that you are calculating for the server-side set time:
 
@@ -60,7 +65,7 @@ T = 2601171700
 
 ---
 
-## Step 2 — Build S‑box from the Secret Key
+## Step 2 - Build S‑box from the Secret Key
 
 The S‑box is a **digit substitution table (0–9 → 0–9)** derived **only from the secret key**.
 S-box (Substitution Box) is a digit-remapping table that replaces each digit (0–9) with another digit to introduce non-linearity.
@@ -99,7 +104,7 @@ Output:  1 2 3 4 5 9 8 7 6 0
 
 ---
 
-## Step 3 — Combine Time and Key (mod 10)
+## Step 3 - Combine Time and Key (mod 10)
 
 Add the time digits and key digits **position‑by‑position**, using mod 10.
 
@@ -117,7 +122,7 @@ C = 3835669460
 
 ---
 
-## Step 4 — Apply S‑box Substitution
+## Step 4 - Apply S‑box Substitution
 
 Replace **each digit** of `C` using the S‑box table.
 
@@ -139,7 +144,7 @@ Result:
 
 ---
 
-## Step 5 — Diffusion (Digit Mixing)
+## Step 5 - Diffusion (Digit Mixing)
 
 Diffusion mixes the digits so each position depends on the previous result: starting with the last digit, each digit is replaced by the sum of itself and the previous output (mod 10).
 This ensures that changing a single digit affects all following digits while remaining simple enough to do mentally.
@@ -173,7 +178,7 @@ Diffused result:
 
 ---
 
-## Step 6 — Fold to 5 Digits
+## Step 6 - Fold to 5 Digits
 
 Pair digits from the **front and back** and add them mod 10 like folded in half:
 ```
@@ -207,7 +212,7 @@ OTP5 = 51076
 
 ---
 
-## Step 7 — Calculate Final Digit (o6)
+## Step 7 - Calculate Final Digit (o6)
 
 Add the **five OTP digits** and take mod 10:
 
