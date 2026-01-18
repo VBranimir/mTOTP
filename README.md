@@ -15,6 +15,11 @@ Rather than treating this as a limitation, it makes it a requirement: the user m
 This document describes the **exact algorithm used by the tool**, written for humans first.
 
 ---
+## Demos
+
+### PAM demo
+
+![pam_mtotp SSH demo](docs/pam_demo.gif)
 
 ## Overview
 
